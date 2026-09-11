@@ -1,0 +1,245 @@
+@model IEnumerable<Velure.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Gerenciar Pedidos";
+}
+
+<section class="admin-page">
+
+    <div class="admin-products-header">
+
+        <div>
+
+            <span class="admin-label">
+                VELURE ADMIN
+            </span>
+
+            <h1>
+                Pedidos
+            </h1>
+
+            <p>
+                Acompanhe e atualize os pedidos da loja.
+            </p>
+
+        </div>
+
+        <a asp-action="Index"
+           class="admin-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="admin-success">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            @TempData["Sucesso"]
+
+        </div>
+    }
+
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="admin-error">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            @TempData["Erro"]
+
+        </div>
+    }
+
+
+    @if (!Model.Any())
+    {
+        <div class="admin-empty">
+
+            <i class="fa-solid fa-box-open"></i>
+
+            <h3>
+                Nenhum pedido realizado
+            </h3>
+
+            <p>
+                Os pedidos dos clientes aparecerão aqui.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="admin-orders">
+
+            @foreach (var pedido in Model)
+            {
+                <article class="admin-order-card">
+
+                    <div class="admin-order-header">
+
+                        <div>
+
+                            <span class="admin-order-number">
+                                Pedido #@pedido.Id
+                            </span>
+
+                            <span class="admin-order-date">
+                                @pedido.CriadoEm.ToString(
+                                    "dd/MM/yyyy HH:mm"
+                                )
+                            </span>
+
+                        </div>
+
+
+                        <span class="admin-order-total">
+                            @pedido.Total.ToString("C")
+                        </span>
+
+                    </div>
+
+
+                    <div class="admin-order-client">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <div>
+
+                            <strong>
+                                @pedido.Cliente.Nome
+                            </strong>
+
+                            <span>
+                                @pedido.Cliente.Email
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-order-items">
+
+                        @foreach (var item in pedido.Itens)
+                        {
+                            <div class="admin-order-item">
+
+                                <div>
+
+                                    <strong>
+                                        @item.NomeProduto
+                                    </strong>
+
+                                    <span>
+                                        @item.Quantidade unidade(s)
+                                        ×
+                                        @item.PrecoUnitario.ToString("C")
+                                    </span>
+
+                                </div>
+
+                                <strong>
+                                    @item.Subtotal.ToString("C")
+                                </strong>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <div class="admin-order-footer">
+
+                        <div class="admin-order-current-status">
+
+                            <span>
+                                Status atual
+                            </span>
+
+                            <strong>
+                                @pedido.Status
+                            </strong>
+
+                        </div>
+
+
+                        <form asp-action="AlterarStatusPedido"
+                              method="post"
+                              class="admin-status-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@pedido.Id" />
+
+
+                            <select name="status">
+
+                                <option value="Pendente"
+                                        selected="@(pedido.Status == "Pendente")">
+                                    Pendente
+                                </option>
+
+                                <option value="Em preparação"
+                                        selected="@(pedido.Status == "Em preparação")">
+                                    Em preparação
+                                </option>
+
+                                <option value="Enviado"
+                                        selected="@(pedido.Status == "Enviado")">
+                                    Enviado
+                                </option>
+
+                                <option value="Entregue"
+                                        selected="@(pedido.Status == "Entregue")">
+                                    Entregue
+                                </option>
+
+                                <option value="Cancelado"
+                                        selected="@(pedido.Status == "Cancelado")">
+                                    Cancelado
+                                </option>
+
+                            </select>
+
+
+                            <button type="submit"
+                                    class="admin-primary-button">
+
+                                <i class="fa-solid fa-rotate"></i>
+
+                                Atualizar
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+<a asp-controller="Admin"
+   asp-action="Clientes"
+   class="admin-menu-link">
+
+    <i class="fa-solid fa-users"></i>
+
+    <span>Clientes</span>
+
+</a>
+
+</section>

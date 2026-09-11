@@ -1,0 +1,535 @@
+@model List<Velure.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Painel Administrativo";
+}
+
+<section class="admin-page">
+
+    <div class="admin-title">
+
+        <div>
+            <span class="admin-label">
+                VELURE ADMIN
+            </span>
+
+            <h1>
+                Painel Administrativo
+            </h1>
+
+            <p>
+                Controle de produtos, estoque,
+                clientes e pedidos.
+            </p>
+        </div>
+
+        <i class="fa-solid fa-chart-line"></i>
+
+    </div>
+
+
+    <div class="admin-stats">
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+                <i class="fa-solid fa-couch"></i>
+            </div>
+
+            <div>
+                <span>
+                    Produtos ativos
+                </span>
+
+                <strong>
+                    @ViewBag.TotalProdutos
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div>
+                <span>
+                    Clientes ativos
+                </span>
+
+                <strong>
+                    @ViewBag.TotalClientes
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+                <i class="fa-solid fa-box"></i>
+            </div>
+
+            <div>
+                <span>
+                    Pedidos
+                </span>
+
+                <strong>
+                    @ViewBag.TotalPedidos
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <span>
+                    Estoque baixo
+                </span>
+
+                <strong>
+                    @ViewBag.EstoqueBaixo
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+                <i class="fa-solid fa-chart-simple"></i>
+            </div>
+
+            <div>
+                <span>
+                    Ticket médio
+                </span>
+
+                <strong>
+                    @(((decimal)ViewBag.TicketMedio)
+                        .ToString(
+                            "C",
+                            new System.Globalization.CultureInfo("pt-BR")
+                        ))
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-revenue">
+
+        <div>
+
+            <span>
+                Faturamento registrado
+            </span>
+
+            <strong>
+                @(((decimal)ViewBag.Faturamento)
+                    .ToString(
+                        "C",
+                        new System.Globalization.CultureInfo("pt-BR")
+                    ))
+            </strong>
+
+            <small>
+                Pedidos cancelados não são contabilizados.
+            </small>
+
+        </div>
+
+        <i class="fa-solid fa-coins"></i>
+
+    </div>
+
+
+    <div class="admin-revenue">
+
+        <div>
+
+            <span>
+                Produto mais vendido
+            </span>
+
+            <strong>
+                @ViewBag.ProdutoMaisVendido
+            </strong>
+
+            <small>
+                @ViewBag.QuantidadeMaisVendida unidade(s) vendida(s)
+            </small>
+
+        </div>
+
+        <i class="fa-solid fa-trophy"></i>
+
+    </div>
+
+
+    <div class="admin-actions">
+
+
+        <a asp-controller="Admin"
+           asp-action="Produtos"
+           class="admin-action-card">
+
+            <i class="fa-solid fa-couch"></i>
+
+            <div>
+
+                <strong>
+                    Produtos
+                </strong>
+
+                <span>
+                    Cadastrar e editar produtos
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a asp-controller="Admin"
+           asp-action="Pedidos"
+           class="admin-action-card">
+
+            <i class="fa-solid fa-box-open"></i>
+
+            <div>
+
+                <strong>
+                    Pedidos
+                </strong>
+
+                <span>
+                    Gerenciar pedidos e status
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a asp-controller="Admin"
+           asp-action="Produtos"
+           class="admin-action-card">
+
+            <i class="fa-solid fa-warehouse"></i>
+
+            <div>
+
+                <strong>
+                    Estoque
+                </strong>
+
+                <span>
+                    Controlar disponibilidade
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a asp-controller="Admin"
+           asp-action="Clientes"
+           class="admin-action-card">
+
+            <i class="fa-solid fa-users"></i>
+
+            <div>
+
+                <strong>
+                    Clientes
+                </strong>
+
+                <span>
+                    Visualizar clientes cadastrados
+                </span>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <div class="admin-section">
+
+    <div class="admin-section-header">
+
+        <div>
+            <h2>
+                Faturamento dos últimos 7 dias
+            </h2>
+
+            <p>
+                Evolução das vendas recentes.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="admin-chart-card">
+
+        <canvas id="faturamentoChart"></canvas>
+
+
+            <div>
+                <h2>
+                    Pedidos recentes
+                </h2>
+
+                <p>
+                    Últimos pedidos realizados na loja.
+                </p>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Pedidos">
+                Ver todos
+            </a>
+
+        </div>
+
+
+        <div class="admin-table-wrapper">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null &&
+                         Model.Count > 0)
+                    {
+                        foreach (var pedido in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    #@pedido.Id
+                                </td>
+
+                                <td>
+                                    @(pedido.Cliente?.Nome ?? "Cliente")
+                                </td>
+
+                                <td>
+                                    @pedido.CriadoEm
+                                        .ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    @pedido.Total.ToString(
+                                        "C",
+                                        new System.Globalization.CultureInfo("pt-BR")
+                                    )
+                                </td>
+
+                                <td>
+                                    <span class="admin-badge">
+                                        @pedido.Status
+                                    </span>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">
+                                Nenhum pedido realizado ainda.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const labelsGrafico =
+            @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(
+                    ViewBag.LabelsGrafico
+                )
+            );
+
+        const valoresGrafico =
+            @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(
+                    ViewBag.ValoresGrafico
+                )
+            );
+
+        const canvas =
+            document.getElementById(
+                'faturamentoChart'
+            );
+
+        if (canvas) {
+
+            new Chart(canvas, {
+
+                type: 'line',
+
+                data: {
+
+                    labels:
+                        labelsGrafico,
+
+                    datasets: [
+
+                        {
+                            label:
+                                'Faturamento',
+
+                            data:
+                                valoresGrafico,
+
+                            borderColor:
+                                '#d6ac18',
+
+                            backgroundColor:
+                                'rgba(214, 172, 24, 0.15)',
+
+                            tension:
+                                0.35,
+
+                            fill:
+                                true,
+
+                            borderWidth:
+                                3,
+
+                            pointRadius:
+                                4,
+
+                            pointHoverRadius:
+                                6
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+                    plugins: {
+
+                        legend: {
+                            display:
+                                false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function(context) {
+
+                                        const valor =
+                                            context.raw ?? 0;
+
+                                        return valor.toLocaleString(
+                                            'pt-BR',
+                                            {
+                                                style: 'currency',
+                                                currency: 'BRL'
+                                            }
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                callback:
+                                    function(value) {
+
+                                        return value.toLocaleString(
+                                            'pt-BR',
+                                            {
+                                                style: 'currency',
+                                                currency: 'BRL',
+                                                maximumFractionDigits: 0
+                                            }
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+}
+
+</section>

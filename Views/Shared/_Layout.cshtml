@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Velure Estofados
+    </title>
+
+    <link rel="icon"
+          type="image/png"
+          href="~/images/velure-icon.png"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        🚚 FRETE GRÁTIS para Suzano e Região
+        • Entrega em até 30 dias
+        • 10% OFF no PIX
+    </div>
+
+
+    <!-- CABEÇALHO -->
+    <header class="main-header">
+
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="logo-link">
+
+                <img src="~/images/velure-icon.png"
+                     asp-append-version="true"
+                     alt="Velure Estofados"
+                     class="site-logo" />
+
+            </a>
+
+
+            <!-- BUSCA -->
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text"
+                       id="productSearch"
+                       placeholder="Buscar produto..." />
+
+                <button type="button"
+                        id="productSearchButton"
+                        aria-label="Buscar">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- AÇÕES DO CABEÇALHO -->
+            <div class="header-actions">
+
+                <!-- CONTA -->
+                <div class="account-menu-container">
+
+                    <button class="header-button"
+                            id="accountButton"
+                            type="button"
+                            data-logged="false">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <span id="accountButtonText">
+                            Entrar
+                        </span>
+
+                    </button>
+
+
+                    <!-- DROPDOWN DA CONTA -->
+                    <div class="account-dropdown"
+                         id="accountDropdown">
+
+                        <div class="account-dropdown-user">
+
+                            <i class="fa-solid fa-circle-user"></i>
+
+                            <div>
+
+                                <strong id="accountUserName">
+                                    Cliente
+                                </strong>
+
+                                <small id="accountUserEmail"></small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="account-dropdown-divider"></div>
+
+
+                        <button type="button"
+                                class="account-dropdown-item"
+                                id="myAccountButton">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            Minha conta
+
+                        </button>
+
+
+                        <button type="button"
+                                class="account-dropdown-item"
+                                id="myOrdersButton">
+
+                            <i class="fa-solid fa-box"></i>
+
+                            Meus pedidos
+
+                        </button>
+
+
+                        <div class="account-dropdown-divider"></div>
+
+
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="account-dropdown-item admin-menu-item"
+                           id="adminPanelButton"
+                           style="display: none;">
+
+                            <i class="fa-solid fa-chart-line"></i>
+
+                            Painel Admin
+
+                        </a>
+
+
+                        <button type="button"
+                                class="account-dropdown-item logout"
+                                id="logoutButton">
+
+                            <i class="fa-solid fa-right-from-bracket"></i>
+
+                            Sair
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TEMA -->
+                <button type="button"
+                        class="header-button theme-toggle"
+                        id="themeButton">
+
+                    <i class="fa-solid fa-moon"></i>
+
+                    <span id="themeText">
+                        Escuro
+                    </span>
+
+                </button>
+
+
+                <!-- CARRINHO -->
+                <button class="header-button"
+                        id="cartButton"
+                        type="button">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    Carrinho
+
+                    <span class="cart-count"
+                          id="cartCount">
+                        0
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CATEGORIAS -->
+    <nav class="category-nav">
+
+        <div class="category-container">
+
+            <button type="button"
+                    class="category-filter active"
+                    data-category-filter="todos">
+                Todos os produtos
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="sofás">
+                Sofás & Retráteis
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="colchões">
+                Colchões
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="armários">
+                Armários & Escrivaninhas
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="mesa">
+                Mesa & Cadeiras
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="multiuso">
+                Multiuso
+            </button>
+
+            <button type="button"
+                    class="category-filter"
+                    data-category-filter="premium">
+                Lançamentos Premium
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- CONTEÚDO -->
+    <main>
+
+        @RenderBody()
+
+    </main>
+
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+
+        <div class="footer-social">
+
+            <a href="https://www.instagram.com/_velure_estofados?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Instagram da Velure">
+
+                <i class="fa-brands fa-instagram"></i>
+
+            </a>
+
+
+            <a href="https://maps.app.goo.gl/1wizdWwDeJ4q6fay7"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Localização da Velure">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+            </a>
+
+
+            <a href="https://api.whatsapp.com/send/?phone=5511966464657&text=Olá%21+Gostaria+de+mais+informações+sobre+os+produtos+Velure.&type=phone_number&app_absent=0"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="WhatsApp da Velure">
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </a>
+
+        </div>
+
+
+        <p>
+            Velure Estofados —
+            Qualidade e design para seu lar
+        </p>
+
+        <p class="footer-highlight">
+            @@_velure_estofados
+        </p>
+
+        <small>
+            © @DateTime.Now.Year Velure —
+            todos os direitos reservados.
+        </small>
+
+    </footer>
+
+
+    <!-- LOGIN / CADASTRO -->
+    <div class="account-overlay"
+         id="accountOverlay">
+    </div>
+
+
+    <div class="account-modal"
+         id="accountModal">
+
+        <div class="account-modal-header">
+
+            <div>
+
+                <i class="fa-solid fa-circle-user"></i>
+
+                <h2>
+                    Minha Conta
+                </h2>
+
+            </div>
+
+
+            <button type="button"
+                    id="closeAccount">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="account-tabs">
+
+            <button type="button"
+                    class="account-tab active"
+                    data-tab="login">
+
+                Entrar
+
+            </button>
+
+
+            <button type="button"
+                    class="account-tab"
+                    data-tab="register">
+
+                Cadastrar
+
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN -->
+        <div class="account-form active"
+             id="loginForm">
+
+            <label for="loginEmail">
+                E-mail
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <input type="email"
+                       id="loginEmail"
+                       autocomplete="email"
+                       placeholder="seuemail@email.com" />
+
+            </div>
+
+
+            <label for="loginPassword">
+                Senha
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password"
+                       id="loginPassword"
+                       autocomplete="current-password"
+                       placeholder="Sua senha" />
+
+            </div>
+
+
+            <button type="button"
+                    class="account-submit"
+                    id="loginButton">
+
+                Entrar
+
+            </button>
+
+
+        </div>
+
+
+        <!-- CADASTRO -->
+        <div class="account-form"
+             id="registerForm">
+
+            <label for="registerName">
+                Nome
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-user"></i>
+
+                <input type="text"
+                       id="registerName"
+                       autocomplete="name"
+                       placeholder="Seu nome completo" />
+
+            </div>
+
+
+            <label for="registerEmail">
+                E-mail
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <input type="email"
+                       id="registerEmail"
+                       autocomplete="email"
+                       placeholder="seuemail@email.com" />
+
+            </div>
+
+
+            <label for="registerPassword">
+                Senha
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password"
+                       id="registerPassword"
+                       autocomplete="new-password"
+                       placeholder="Crie uma senha" />
+
+            </div>
+
+
+            <label for="registerConfirmPassword">
+                Confirmar senha
+            </label>
+
+            <div class="account-input">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password"
+                       id="registerConfirmPassword"
+                       autocomplete="new-password"
+                       placeholder="Repita sua senha" />
+
+            </div>
+
+
+            <button type="button"
+                    class="account-submit"
+                    id="registerButton">
+
+                Criar conta
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MINHA CONTA -->
+    <div class="profile-overlay"
+         id="profileOverlay">
+    </div>
+
+
+    <div class="profile-modal"
+         id="profileModal">
+
+        <div class="profile-header">
+
+            <div>
+
+                <i class="fa-solid fa-user"></i>
+
+                <h2>
+                    Minha Conta
+                </h2>
+
+            </div>
+
+
+            <button type="button"
+                    id="closeProfile">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="profile-content">
+
+            <div class="profile-avatar">
+
+                <i class="fa-solid fa-circle-user"></i>
+
+            </div>
+
+
+            <div class="profile-field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input type="text"
+                       id="profileName"
+                       readonly />
+
+            </div>
+
+
+            <div class="profile-field">
+
+                <label>
+                    E-mail
+                </label>
+
+                <input type="email"
+                       id="profileEmail"
+                       readonly />
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Sua conta está protegida pela autenticação da Velure.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MEUS PEDIDOS -->
+    <div class="orders-overlay"
+         id="ordersOverlay">
+    </div>
+
+
+    <div class="orders-modal"
+         id="ordersModal">
+
+        <div class="orders-header">
+
+            <div>
+
+                <i class="fa-solid fa-box"></i>
+
+                <h2>
+                    Meus Pedidos
+                </h2>
+
+            </div>
+
+
+            <button type="button"
+                    id="closeOrders">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="orders-content"
+             id="ordersContent">
+
+            <p class="orders-loading">
+                Carregando pedidos...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- CARRINHO -->
+    <div class="cart-overlay"
+         id="cartOverlay">
+    </div>
+
+
+    <aside class="cart-drawer"
+           id="cartDrawer">
+
+        <div class="cart-header">
+
+            <h2>
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                Seu pedido
+
+            </h2>
+
+
+            <button type="button"
+                    id="closeCart">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="cart-items"
+             id="cartItems">
+
+            <div class="empty-cart">
+                Seu carrinho está vazio.
+            </div>
+
+        </div>
+
+
+        <div class="cart-footer">
+
+            <div class="cart-total">
+
+                <span>
+                    Total:
+                </span>
+
+                <strong id="cartTotal">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+
+            <button type="button"
+                    class="checkout-button"
+                    id="checkoutButton">
+
+                FINALIZAR PEDIDO
+
+            </button>
+
+
+            <small>
+                Parcele em até 10x sem juros no cartão
+            </small>
+
+        </div>
+
+    </aside>
+
+<div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+        <button type="button" class="checkout-close" id="checkoutClose">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <h2>Finalizar compra</h2>
+        <p>Preencha seus dados para concluir o pedido.</p>
+
+        <form id="checkoutForm">
+
+            <div class="checkout-grid">
+
+                <div class="form-group">
+                    <label for="checkoutTelefone">Telefone</label>
+                    <input type="text"
+                           id="checkoutTelefone"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutCpf">CPF</label>
+                    <input type="text"
+                           id="checkoutCpf" />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutCep">CEP</label>
+                    <input type="text"
+                           id="checkoutCep"
+                           required />
+                </div>
+
+                <div class="form-group checkout-wide">
+                    <label for="checkoutEndereco">Endereço</label>
+                    <input type="text"
+                           id="checkoutEndereco"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutNumero">Número</label>
+                    <input type="text"
+                           id="checkoutNumero"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutComplemento">Complemento</label>
+                    <input type="text"
+                           id="checkoutComplemento" />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutBairro">Bairro</label>
+                    <input type="text"
+                           id="checkoutBairro"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutCidade">Cidade</label>
+                    <input type="text"
+                           id="checkoutCidade"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="checkoutEstado">Estado</label>
+                    <input type="text"
+                           id="checkoutEstado"
+                           maxlength="2"
+                           placeholder="SP"
+                           required />
+                </div>
+
+                <div class="form-group checkout-wide">
+                    <label for="checkoutPagamento">Forma de pagamento</label>
+
+                    <select id="checkoutPagamento" required>
+                        <option value="">Selecione</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">
+                            Cartão de Crédito
+                        </option>
+                        <option value="Cartão de Débito">
+                            Cartão de Débito
+                        </option>
+                        <option value="Dinheiro">
+                            Dinheiro
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit" class="checkout-submit">
+                Finalizar pedido
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+
+    <!-- JAVASCRIPT -->
+    <script src="~/js/site.js"
+            asp-append-version="true">
+    </script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+@model List<Velure.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<section class="admin-page">
+
+    <div class="admin-page-header">
+        <div>
+            <span class="admin-label">VELURE ADMIN</span>
+            <h1>Clientes</h1>
+            <p>Usuários cadastrados na loja.</p>
+        </div>
+    </div>
+
+    <form method="get"
+          asp-controller="Admin"
+          asp-action="Clientes"
+          class="admin-search">
+
+        <input type="text"
+               name="busca"
+               value="@ViewBag.Busca"
+               placeholder="Buscar por nome ou e-mail..." />
+
+        <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Buscar
+        </button>
+
+    </form>
+
+    <div class="admin-table-wrapper">
+
+        <table class="admin-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>E-mail</th>
+                    <th>Cadastro</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var cliente in Model)
+                {
+                    <tr>
+
+                        <td>
+                            #@cliente.Id
+                        </td>
+
+                        <td>
+                            <strong>@cliente.Nome</strong>
+                        </td>
+
+                        <td>
+                            @cliente.Email
+                        </td>
+
+                        <td>
+                            @cliente.CriadoEm.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+
+                        <td>
+                            @if (cliente.IsAdmin)
+                            {
+                                <span class="admin-badge admin">
+                                    Administrador
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="admin-badge cliente">
+                                    Cliente
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (cliente.Ativo)
+                            {
+                                <span class="admin-badge ativo">
+                                    Ativo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="admin-badge inativo">
+                                    Inativo
+                                </span>
+                            }
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="admin-empty">
+            <i class="fa-solid fa-users"></i>
+            <h3>Nenhum cliente encontrado</h3>
+        </div>
+    }
+
+</section>

@@ -1,0 +1,314 @@
+﻿@model List<Velure.Models.Produto>
+
+@{
+    ViewData["Title"] = "Início";
+}
+
+<section class="hero-section">
+
+    <div class="hero-content">
+
+        <div>
+
+            <h1>
+                Ofertas da Semana 🔥
+            </h1>
+
+            <p>
+                <strong>Entrega em até 30 dias</strong>
+                • Peças selecionadas com até -25%
+            </p>
+
+            <span class="frete-badge">
+                🚚 FRETE GRÁTIS NA REGIÃO
+            </span>
+
+        </div>
+
+        <div class="hero-icons">
+
+            <i class="fa-solid fa-bed"></i>
+
+            <i class="fa-solid fa-couch"></i>
+
+            <i class="fa-solid fa-chair"></i>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="instagram-banner">
+
+    <div class="instagram-info">
+
+        <i class="fa-brands fa-instagram"></i>
+
+        <div>
+
+            <strong>
+                Siga @@_velure_estofados no Instagram!
+            </strong>
+
+            <span>
+                Fique por dentro das promoções exclusivas,
+                lançamentos e ofertas relâmpago!
+            </span>
+
+        </div>
+
+    </div>
+
+    <a href="https://www.instagram.com/_velure_estofados?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+   target="_blank"
+   rel="noopener noreferrer"
+   class="instagram-button">
+
+    <i class="fa-brands fa-instagram"></i>
+
+    Seguir @@_velure_estofados
+
+</a>
+
+</section>
+
+
+<section class="products-section">
+
+    <div class="section-title">
+
+        <span></span>
+
+        <h2>
+            <i class="fa-solid fa-tag"></i>
+            Produtos em destaque
+        </h2>
+
+    </div>
+
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="empty-products">
+
+            <h3>
+                Nenhum produto cadastrado
+            </h3>
+
+            <p>
+                Cadastre produtos no banco para eles aparecerem aqui.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="product-grid">
+
+            @foreach (var produto in Model)
+            {
+                <article class="product-card"
+         data-product-card
+         data-name="@produto.Nome"
+         data-category="@produto.Categoria"
+         data-color="@produto.Cor">
+
+                    <div class="product-image">
+
+                        @if (!string.IsNullOrWhiteSpace(produto.ImagemUrl))
+                        {
+                            <img src="@produto.ImagemUrl"
+                                 alt="@produto.Nome" />
+                        }
+                        else
+                        {
+                            <div class="image-placeholder">
+
+                                <i class="fa-solid fa-couch"></i>
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="product-body">
+
+                        <span class="product-category">
+                            @produto.Categoria
+                        </span>
+
+                        <h3>
+                            @produto.Nome
+                        </h3>
+
+                        @if (!string.IsNullOrWhiteSpace(produto.Cor))
+                        {
+                            <span class="product-color">
+
+                                <i class="fa-solid fa-palette"></i>
+
+                                @produto.Cor
+
+                            </span>
+                        }
+
+                        <div class="product-price">
+
+                            @if (produto.PrecoAntigo.HasValue)
+                            {
+                                <span class="old-price">
+
+                                    @produto.PrecoAntigo.Value.ToString("C")
+
+                                </span>
+                            }
+
+                            <strong>
+                                @produto.Preco.ToString("C")
+                            </strong>
+
+                        </div>
+
+                        @if (produto.Desconto > 0)
+                        {
+                            <span class="discount-badge">
+                                -@produto.Desconto%
+                            </span>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(produto.Parcelamento))
+                        {
+                            <p class="installments">
+                                @produto.Parcelamento
+                            </p>
+                        }
+
+                        <button class="add-cart-button"
+                         type="button"
+                         data-id="@produto.Id"
+                         data-name="@produto.Nome"
+                         data-price="@produto.Preco.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                          data-image="@produto.ImagemUrl">
+
+                          <i class="fa-solid fa-cart-shopping"></i>
+
+                            Adicionar
+
+                        </button>
+
+                    </div>
+
+
+
+
+
+                </article>
+            }
+
+
+
+        </div>
+
+    }  <div id="emptyProductSearch"
+     class="empty-product-search"
+     style="display: none;">
+
+    <i class="fa-solid fa-magnifying-glass"></i>
+
+    <h3>
+        Nenhum produto encontrado
+    </h3>
+
+    <p>
+        Tente pesquisar outro nome,
+        categoria ou cor.
+    </p>
+
+</div>
+
+</section>
+
+
+<section class="location-section">
+
+    <div class="section-title">
+
+        <span></span>
+
+        <h2>
+            <i class="fa-solid fa-location-dot"></i>
+            Nossa Loja Física
+        </h2>
+
+    </div>
+
+    <div class="store-map">
+
+    <iframe
+        src="https://www.google.com/maps?q=Av.%20Francisco%20Marengo%2C%202000%20-%20Jardim%20Dona%20Benta%2C%20Suzano%20-%20SP&output=embed"
+        width="100%"
+        height="330"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+
+</div>
+
+<a href="https://maps.app.goo.gl/1wizdWwDeJ4q6fay7"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="store-link">
+
+    <i class="fa-solid fa-map-location-dot"></i>
+    Ver localização no Google Maps
+
+</a>
+
+
+
+    </div>
+
+    <div class="store-info">
+
+        <p>
+            <i class="fa-solid fa-location-dot"></i>
+            <strong>Endereço:</strong>
+            Av. Francisco Marengo, 2000 - Jardim Dona Benta, Suzano - SP
+        </p>
+
+        <p>
+            <i class="fa-solid fa-clock"></i>
+            <strong>Horário:</strong>
+            Seg-Sáb: 09h às 18h
+        </p>
+
+        <p>
+            <i class="fa-solid fa-phone"></i>
+            <strong>Telefone:</strong>
+            (11) 96646-4657
+        </p>
+
+        <p>
+            <i class="fa-brands fa-whatsapp"></i>
+            <strong>WhatsApp:</strong>
+            (11) 96646-4657
+        </p>
+
+    </div>
+
+<a href="https://api.whatsapp.com/send/?phone=5511966464657&text=Olá%21+Gostaria+de+mais+informações+sobre+os+produtos+Velure.&type=phone_number&app_absent=0"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="store-link">
+
+    <i class="fa-brands fa-whatsapp"></i>
+    Falar pelo WhatsApp
+
+</a>
+
+</section>
+

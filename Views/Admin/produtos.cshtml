@@ -1,0 +1,281 @@
+@model IEnumerable<Velure.Models.Produto>
+
+@{
+    ViewData["Title"] = "Gerenciar Produtos";
+}
+
+<section class="admin-page">
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="admin-success">
+
+        <i class="fa-solid fa-circle-check"></i>
+
+        @TempData["Sucesso"]
+
+    </div>
+}
+
+    <div class="admin-products-header">
+
+        <div>
+            <span class="admin-label">
+                VELURE ADMIN
+            </span>
+
+            <h1>
+                Produtos
+            </h1>
+
+            <p>
+                Gerencie o catálogo e o estoque da loja.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="CriarProduto"
+           class="admin-primary-button">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Novo produto
+
+        </a>
+
+    </div>
+
+
+    <div class="admin-toolbar">
+
+        <div class="admin-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text"
+                   id="adminProductSearch"
+                   placeholder="Buscar produto..." />
+
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+
+    <div class="admin-table-wrapper">
+
+        <table class="admin-table"
+               id="adminProductsTable">
+
+            <thead>
+
+                <tr>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var produto in Model)
+                {
+                    <tr data-product-row>
+
+                        <td>
+
+                            <div class="admin-product-info">
+
+                                @if (!string.IsNullOrWhiteSpace(produto.ImagemUrl))
+                                {
+                                    <img src="@produto.ImagemUrl"
+                                         alt="@produto.Nome" />
+                                }
+                                else
+                                {
+                                    <div class="admin-product-no-image">
+
+                                        <i class="fa-solid fa-image"></i>
+
+                                    </div>
+                                }
+
+                                <div>
+
+                                    <strong>
+                                        @produto.Nome
+                                    </strong>
+
+                                    <small>
+                                        ID #@produto.Id
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+                            @produto.Categoria
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                @produto.Preco.ToString("C")
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            @if (produto.Estoque <= 0)
+                            {
+                                <span class="stock-badge stock-empty">
+                                    Sem estoque
+                                </span>
+                            }
+                            else if (produto.Estoque <= 5)
+                            {
+                                <span class="stock-badge stock-low">
+
+                                    @produto.Estoque un.
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="stock-badge stock-ok">
+
+                                    @produto.Estoque un.
+
+                                </span>
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            @if (produto.Ativo)
+                            {
+                                <span class="status-badge status-active">
+
+                                    <i class="fa-solid fa-circle"></i>
+
+                                    Ativo
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">
+
+                                    <i class="fa-solid fa-circle"></i>
+
+                                    Inativo
+
+                                </span>
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="admin-table-actions">
+
+                                <a asp-controller="Admin"
+                                   asp-action="EditarProduto"
+                                   asp-route-id="@produto.Id"
+                                   class="admin-icon-button"
+                                   title="Editar">
+
+
+<form asp-controller="Admin"
+      asp-action="AlternarStatusProduto"
+      asp-route-id="@produto.Id"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <button type="submit"
+            class="admin-icon-button"
+            title="@(produto.Ativo ? "Desativar" : "Ativar")">
+
+        @if (produto.Ativo)
+        {
+            <i class="fa-solid fa-eye-slash"></i>
+        }
+        else
+        {
+            <i class="fa-solid fa-eye"></i>
+        }
+
+    </button>
+
+</form>
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="admin-empty">
+
+            <i class="fa-solid fa-couch"></i>
+
+            <h3>
+                Nenhum produto cadastrado
+            </h3>
+
+            <p>
+                Cadastre o primeiro produto da Velure.
+            </p>
+
+        </div>
+    }
+
+<a asp-controller="Admin"
+   asp-action="Clientes"
+   class="admin-menu-link">
+
+    <i class="fa-solid fa-users"></i>
+
+    <span>Clientes</span>
+
+</a>
+
+</section>
