@@ -3810,3 +3810,677 @@ html[data-theme="dark"] .add-cart-button {
     }
 
 }
+
+/* =========================================
+   DASHBOARD - STATUS DOS PEDIDOS
+========================================= */
+
+.admin-status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.admin-status-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 20px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-status-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.10);
+}
+
+.admin-status-icon {
+    width: 50px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 19px;
+}
+
+/* Identidade Velure */
+
+.status-pendente {
+    background: rgba(214, 172, 24, 0.15);
+    color: #d6ac18;
+}
+
+.status-preparacao {
+    background: rgba(214, 172, 24, 0.22);
+    color: #c89b00;
+}
+
+.status-enviado {
+    background: rgba(27, 49, 86, 0.15);
+    color: #315d9d;
+}
+
+.status-entregue {
+    background: rgba(30, 150, 95, 0.15);
+    color: #1e965f;
+}
+
+.admin-status-card span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    margin-bottom: 4px;
+}
+
+.admin-status-card strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.admin-status-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 16px;
+
+    background: linear-gradient(
+        135deg,
+        #d6ac18,
+        #f0ca39
+    );
+
+    color: #07111f;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-status-link:hover {
+    color: #07111f;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(214, 172, 24, 0.25);
+}
+
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+
+    .admin-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+    .admin-status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-status-card {
+        padding: 16px;
+    }
+
+}
+
+/* =========================================
+   DASHBOARD - ESTOQUE BAIXO
+========================================= */
+
+.admin-stock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-top: 18px;
+    padding: 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.admin-stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+    padding: 14px 16px;
+
+    background: var(--surface-secondary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.admin-stock-item:hover {
+    transform: translateX(3px);
+    border-color: #d6ac18;
+}
+
+.admin-stock-product {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    min-width: 0;
+}
+
+.admin-stock-icon {
+    width: 43px;
+    height: 43px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(214, 172, 24, 0.14);
+    color: #d6ac18;
+
+    border-radius: 12px;
+
+    font-size: 17px;
+}
+
+.admin-stock-product strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.admin-stock-product span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+/* BADGES */
+
+.admin-stock-badge {
+    flex-shrink: 0;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+/* 3 a 5 unidades */
+
+.stock-low {
+    color: #8a6900;
+    background: rgba(214, 172, 24, 0.18);
+}
+
+/* 1 ou 2 unidades */
+
+.stock-critical {
+    color: #b65d00;
+    background: rgba(255, 145, 0, 0.15);
+}
+
+/* zero */
+
+.stock-empty {
+    color: #c0392b;
+    background: rgba(192, 57, 43, 0.14);
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+    .admin-stock-list {
+        padding: 12px;
+    }
+
+    .admin-stock-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .admin-stock-product strong {
+        font-size: 13px;
+    }
+
+    .admin-stock-badge {
+        font-size: 10px;
+        padding: 6px 9px;
+    }
+}
+
+
+/* =========================================
+   PRODUTOS - ESTOQUE
+========================================= */
+
+.product-stock {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin: 10px 0;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.product-stock-low {
+    color: #c88600;
+}
+
+.product-stock-empty {
+    color: #c0392b;
+}
+
+.add-cart-disabled,
+.add-cart-disabled:hover {
+    background: #d8d8d8 !important;
+    color: #777 !important;
+
+    cursor: not-allowed !important;
+
+    transform: none !important;
+    box-shadow: none !important;
+
+    opacity: 0.75;
+}
+
+/* =========================================
+   MEUS PEDIDOS - ACOMPANHAMENTO
+========================================= */
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 12px;
+
+    background: rgba(214, 172, 24, 0.15);
+    color: #b58b00;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+.order-status-cancelled {
+    background: rgba(192, 57, 43, 0.14);
+    color: #c0392b;
+}
+
+
+/* LINHA DE ACOMPANHAMENTO */
+
+.order-tracking {
+    display: flex;
+    align-items: flex-start;
+
+    width: 100%;
+
+    margin: 24px 0;
+    padding: 20px 10px;
+
+    background: var(--surface-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.order-tracking-step {
+    width: 85px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    color: var(--text-muted);
+}
+
+.tracking-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 8px;
+
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+
+    font-size: 13px;
+
+    transition: 0.2s ease;
+}
+
+.order-tracking-step span {
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* ETAPA CONCLUÍDA */
+
+.order-tracking-step.completed {
+    color: #d6ac18;
+}
+
+.order-tracking-step.completed .tracking-icon {
+    background: #d6ac18;
+    color: #07111f;
+
+    border-color: #d6ac18;
+
+    box-shadow:
+        0 5px 14px rgba(214, 172, 24, 0.25);
+}
+
+
+/* LINHA ENTRE AS ETAPAS */
+
+.order-tracking-line {
+    flex: 1;
+
+    height: 3px;
+
+    margin-top: 18px;
+
+    background: var(--border);
+}
+
+.order-tracking-line.completed {
+    background: #d6ac18;
+}
+
+
+/* CANCELADO */
+
+.order-cancelled-box {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin: 20px 0;
+    padding: 15px;
+
+    background: rgba(192, 57, 43, 0.08);
+    border: 1px solid rgba(192, 57, 43, 0.25);
+    border-radius: 14px;
+
+    color: #c0392b;
+}
+
+.order-cancelled-box i {
+    font-size: 22px;
+}
+
+.order-cancelled-box strong,
+.order-cancelled-box span {
+    display: block;
+}
+
+.order-cancelled-box span {
+    margin-top: 3px;
+    font-size: 11px;
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+    .order-tracking {
+        padding: 15px 4px;
+    }
+
+    .order-tracking-step {
+        width: 60px;
+    }
+
+    .tracking-icon {
+        width: 32px;
+        height: 32px;
+
+        font-size: 11px;
+    }
+
+    .order-tracking-step span {
+        font-size: 8px;
+    }
+
+    .order-tracking-line {
+        margin-top: 15px;
+    }
+}
+
+
+/* PRODUTO PREMIUM - ADMIN */
+
+.premium-checkbox {
+    padding: 14px 18px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(214, 172, 24, 0.16),
+        rgba(214, 172, 24, 0.05)
+    );
+
+    border: 1px solid rgba(214, 172, 24, 0.4);
+    border-radius: 14px;
+
+    transition: 0.2s ease;
+}
+
+.premium-checkbox:hover {
+    border-color: #d6ac18;
+
+    box-shadow:
+        0 8px 20px rgba(214, 172, 24, 0.12);
+}
+
+.premium-checkbox input {
+    accent-color: #d6ac18;
+}
+
+.premium-checkbox label {
+    cursor: pointer;
+    font-weight: 800;
+}
+
+/* =========================================
+   SELO PREMIUM
+========================================= */
+
+.product-card {
+    position: relative;
+}
+
+.premium-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 5;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 7px 12px;
+
+    background: linear-gradient(135deg, #d6ac18, #f0ca39);
+    color: #07111f;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .5px;
+
+    box-shadow: 0 6px 18px rgba(214, 172, 24, .30);
+}
+
+
+/* =========================================
+   DASHBOARD - PEDIDOS RECENTES
+========================================= */
+
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 16px 18px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.admin-table th {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    background: var(--surface-secondary);
+}
+
+.admin-table td {
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+}
+
+.admin-table tbody tr {
+    transition: background .2s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: var(--surface-secondary);
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background: rgba(214, 172, 24, .15);
+    color: #d6ac18;
+
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.admin-chart-card {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    padding: 20px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.admin-chart-card canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media (max-width: 700px) {
+
+    .admin-table th,
+    .admin-table td {
+        padding: 13px 14px;
+    }
+
+    .admin-chart-card {
+        height: 260px;
+        padding: 12px;
+    }
+}
+

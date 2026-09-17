@@ -1,0 +1,235 @@
+@model Velure.Models.Produto
+
+@{
+    ViewData["Title"] = "Editar Produto";
+}
+
+<section class="admin-page">
+
+    <div class="admin-products-header">
+
+        <div>
+            <span class="admin-label">
+                VELURE ADMIN
+            </span>
+
+            <h1>Editar produto</h1>
+
+            <p>
+                Altere as informações, preço e estoque do produto.
+            </p>
+        </div>
+
+        <a asp-action="Produtos"
+           class="admin-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar
+
+        </a>
+
+    </div>
+
+
+    <form asp-action="EditarProduto"
+          method="post"
+          enctype="multipart/form-data"
+          class="admin-product-form">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               asp-for="Id" />
+
+
+        <div class="form-group">
+
+            <label asp-for="Nome">
+                Nome do produto
+            </label>
+
+            <input asp-for="Nome"
+                   class="form-control" />
+
+            <span asp-validation-for="Nome"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="Categoria">
+                Categoria
+            </label>
+
+            <input asp-for="Categoria"
+                   class="form-control" />
+
+            <span asp-validation-for="Categoria"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="Cor">
+                Cor
+            </label>
+
+            <input asp-for="Cor"
+                   class="form-control" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="Preco">
+                Preço
+            </label>
+
+            <input asp-for="Preco"
+                   type="number"
+                   step="0.01"
+                   min="0"
+                   class="form-control" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="PrecoAntigo">
+                Preço antigo
+            </label>
+
+            <input asp-for="PrecoAntigo"
+                   type="number"
+                   step="0.01"
+                   min="0"
+                   class="form-control" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="Desconto">
+                Desconto (%)
+            </label>
+
+            <input asp-for="Desconto"
+                   type="number"
+                   min="0"
+                   max="100"
+                   class="form-control" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label asp-for="Parcelamento">
+                Parcelamento
+            </label>
+
+            <input asp-for="Parcelamento"
+                   class="form-control"
+                   placeholder="Ex.: 10x sem juros" />
+
+        </div>
+
+
+        <!-- ESTOQUE -->
+
+        <div class="form-group">
+
+            <label asp-for="Estoque">
+                Estoque disponível
+            </label>
+
+            <input asp-for="Estoque"
+                   type="number"
+                   min="0"
+                   class="form-control" />
+
+            <small>
+                Quantidade de unidades disponíveis para venda.
+            </small>
+
+        </div>
+
+
+        <!-- IMAGEM ATUAL -->
+
+        @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
+        {
+            <div class="admin-current-image">
+
+                <span>Imagem atual</span>
+
+                <img src="@Model.ImagemUrl"
+                     alt="@Model.Nome" />
+
+            </div>
+        }
+
+
+        <div class="form-group">
+
+            <label>
+                Alterar imagem
+            </label>
+
+            <input type="file"
+                   name="imagem"
+                   accept=".jpg,.jpeg,.png,.webp"
+                   class="form-control" />
+
+            <small>
+                Deixe vazio para manter a imagem atual.
+            </small>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Produto ativo
+            </label>
+
+            <label class="admin-checkbox">
+
+                <input asp-for="Ativo" />
+
+                Disponível no catálogo
+
+            </label>
+
+        </div>
+
+<div class="admin-form-check admin-form-full premium-checkbox">
+
+    <input asp-for="Destaque" />
+
+    <label asp-for="Destaque">
+        ⭐ Produto Premium / Lançamento
+    </label>
+
+</div>
+
+        <button type="submit"
+                class="admin-primary-button">
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Salvar alterações
+
+        </button>
+
+    </form>
+
+</section>

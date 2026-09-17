@@ -270,8 +270,155 @@
 
     </div>
 
+<!-- =========================================
+     STATUS DOS PEDIDOS
+========================================= -->
 
+<div class="admin-section">
+
+    <div class="admin-section-header">
+        <div>
+            <h2>Status dos pedidos</h2>
+            <p>Acompanhe rapidamente o andamento das vendas.</p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Pedidos"
+           class="admin-status-link">
+            Ver todos os pedidos
+        </a>
+    </div>
+
+    <div class="admin-status-grid">
+
+        <div class="admin-status-card">
+            <div class="admin-status-icon status-pendente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <span>Pendentes</span>
+                <strong>@ViewBag.PedidosPendentes</strong>
+            </div>
+        </div>
+
+        <div class="admin-status-card">
+            <div class="admin-status-icon status-preparacao">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+
+            <div>
+                <span>Em preparação</span>
+                <strong>@ViewBag.PedidosPreparacao</strong>
+            </div>
+        </div>
+
+        <div class="admin-status-card">
+            <div class="admin-status-icon status-enviado">
+                <i class="fa-solid fa-truck"></i>
+            </div>
+
+            <div>
+                <span>Enviados</span>
+                <strong>@ViewBag.PedidosEnviados</strong>
+            </div>
+        </div>
+
+        <div class="admin-status-card">
+            <div class="admin-status-icon status-entregue">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <span>Entregues</span>
+                <strong>@ViewBag.PedidosEntregues</strong>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     ALERTA DE ESTOQUE BAIXO
+========================================= -->
+
+@if (ViewBag.ProdutosEstoqueBaixo != null)
+{
     <div class="admin-section">
+
+        <div class="admin-section-header">
+            <div>
+                <h2>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Atenção ao estoque
+                </h2>
+
+                <p>
+                    Produtos com 5 unidades ou menos disponíveis.
+                </p>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Produtos"
+               class="admin-status-link">
+                Gerenciar estoque
+            </a>
+        </div>
+
+        <div class="admin-stock-list">
+
+            @foreach (var produto in ViewBag.ProdutosEstoqueBaixo)
+            {
+                <div class="admin-stock-item">
+
+                    <div class="admin-stock-product">
+
+                        <div class="admin-stock-icon">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+
+                        <div>
+                            <strong>@produto.Nome</strong>
+                            <span>@produto.Categoria</span>
+                        </div>
+
+                    </div>
+
+                    @if (produto.Estoque <= 0)
+                    {
+                        <span class="admin-stock-badge stock-empty">
+                            ESGOTADO
+                        </span>
+                    }
+                    else if (produto.Estoque <= 2)
+                    {
+                        <span class="admin-stock-badge stock-critical">
+                            @produto.Estoque unidade(s)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="admin-stock-badge stock-low">
+                            @produto.Estoque unidade(s)
+                        </span>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+}
+
+    
+
+   <!-- =========================================
+     GRÁFICO DE FATURAMENTO
+========================================= -->
+
+<div class="admin-section">
 
     <div class="admin-section-header">
 
@@ -288,99 +435,109 @@
     </div>
 
     <div class="admin-chart-card">
-
         <canvas id="faturamentoChart"></canvas>
+    </div>
+
+</div>
 
 
-            <div>
-                <h2>
-                    Pedidos recentes
-                </h2>
+<!-- =========================================
+     PEDIDOS RECENTES
+========================================= -->
 
-                <p>
-                    Últimos pedidos realizados na loja.
-                </p>
-            </div>
+<div class="admin-section">
 
-            <a asp-controller="Admin"
-               asp-action="Pedidos">
-                Ver todos
-            </a>
+    <div class="admin-section-header">
 
+        <div>
+            <h2>
+                Pedidos recentes
+            </h2>
+
+            <p>
+                Últimos pedidos realizados na loja.
+            </p>
         </div>
 
-
-        <div class="admin-table-wrapper">
-
-            <table class="admin-table">
-
-                <thead>
-
-                    <tr>
-                        <th>Pedido</th>
-                        <th>Cliente</th>
-                        <th>Data</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @if (Model != null &&
-                         Model.Count > 0)
-                    {
-                        foreach (var pedido in Model)
-                        {
-                            <tr>
-
-                                <td>
-                                    #@pedido.Id
-                                </td>
-
-                                <td>
-                                    @(pedido.Cliente?.Nome ?? "Cliente")
-                                </td>
-
-                                <td>
-                                    @pedido.CriadoEm
-                                        .ToString("dd/MM/yyyy HH:mm")
-                                </td>
-
-                                <td>
-                                    @pedido.Total.ToString(
-                                        "C",
-                                        new System.Globalization.CultureInfo("pt-BR")
-                                    )
-                                </td>
-
-                                <td>
-                                    <span class="admin-badge">
-                                        @pedido.Status
-                                    </span>
-                                </td>
-
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5">
-                                Nenhum pedido realizado ainda.
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
+        <a asp-controller="Admin"
+           asp-action="Pedidos"
+           class="admin-status-link">
+            Ver todos
+        </a>
 
     </div>
 
+
+    <div class="admin-table-wrapper">
+
+        <table class="admin-table">
+
+            <thead>
+
+                <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var pedido in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <strong>#@pedido.Id</strong>
+                            </td>
+
+                            <td>
+                                @(pedido.Cliente?.Nome ?? "Cliente")
+                            </td>
+
+                            <td>
+                                @(pedido.CriadoEm.ToString("dd/MM/yyyy HH:mm"))
+                            </td>
+
+                            <td>
+                                @pedido.Total.ToString(
+                                    "C",
+                                    new System.Globalization.CultureInfo("pt-BR")
+                                )
+                            </td>
+
+                            <td>
+                                <span class="admin-badge">
+                                    @pedido.Status
+                                </span>
+                            </td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+
+                        <td colspan="5">
+                            Nenhum pedido realizado ainda.
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 @section Scripts {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -531,5 +688,7 @@
     </script>
 
 }
+
+
 
 </section>

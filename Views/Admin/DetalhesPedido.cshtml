@@ -1,0 +1,223 @@
+@model Velure.Models.Pedido
+
+@{
+    ViewData["Title"] = $"Pedido #{Model.Id}";
+}
+
+<section class="admin-page">
+
+    <div class="admin-products-header">
+
+        <div>
+            <span class="admin-label">
+                VELURE ADMIN
+            </span>
+
+            <h1>
+                Pedido #@Model.Id
+            </h1>
+
+            <p>
+                Detalhes completos da compra.
+            </p>
+        </div>
+
+        <a asp-action="Pedidos"
+           class="admin-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar aos pedidos
+
+        </a>
+
+    </div>
+
+
+    <!-- CLIENTE -->
+
+    <div class="admin-detail-card">
+
+        <h2>
+            <i class="fa-solid fa-user"></i>
+            Cliente
+        </h2>
+
+        <div class="admin-detail-grid">
+
+            <div>
+                <span>Nome</span>
+                <strong>
+                    @Model.Cliente.Nome
+                </strong>
+            </div>
+
+            <div>
+                <span>E-mail</span>
+                <strong>
+                    @Model.Cliente.Email
+                </strong>
+            </div>
+
+            <div>
+                <span>Telefone</span>
+                <strong>
+                    @(Model.Telefone ?? "Não informado")
+                </strong>
+            </div>
+
+            <div>
+                <span>CPF</span>
+                <strong>
+                    @(Model.Cpf ?? "Não informado")
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ENTREGA -->
+
+    <div class="admin-detail-card">
+
+        <h2>
+            <i class="fa-solid fa-location-dot"></i>
+            Entrega
+        </h2>
+
+        <div class="admin-detail-grid">
+
+            <div>
+                <span>Endereço</span>
+                <strong>
+                    @(Model.Endereco ?? "Não informado")
+                </strong>
+            </div>
+
+            <div>
+                <span>Número</span>
+                <strong>
+                    @(Model.Numero ?? "-")
+                </strong>
+            </div>
+
+            <div>
+                <span>Bairro</span>
+                <strong>
+                    @(Model.Bairro ?? "-")
+                </strong>
+            </div>
+
+            <div>
+                <span>Cidade / Estado</span>
+                <strong>
+                    @(Model.Cidade ?? "-")
+                    -
+                    @(Model.Estado ?? "-")
+                </strong>
+            </div>
+
+            <div>
+                <span>CEP</span>
+                <strong>
+                    @(Model.Cep ?? "-")
+                </strong>
+            </div>
+
+            <div>
+                <span>Complemento</span>
+                <strong>
+                    @(Model.Complemento ?? "-")
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PRODUTOS -->
+
+    <div class="admin-detail-card">
+
+        <h2>
+            <i class="fa-solid fa-box"></i>
+            Produtos
+        </h2>
+
+        <div class="admin-detail-products">
+
+            @foreach (var item in Model.Itens)
+            {
+                <div class="admin-detail-product">
+
+                    <div>
+                        <strong>
+                            @item.NomeProduto
+                        </strong>
+
+                        <span>
+                            @item.Quantidade unidade(s)
+                            ×
+                            @item.PrecoUnitario.ToString("C")
+                        </span>
+                    </div>
+
+                    <strong>
+                        @item.Subtotal.ToString("C")
+                    </strong>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div class="admin-detail-card">
+
+        <h2>
+            <i class="fa-solid fa-receipt"></i>
+            Resumo
+        </h2>
+
+        <div class="admin-detail-grid">
+
+            <div>
+                <span>Data do pedido</span>
+                <strong>
+                    @Model.CriadoEm.ToString("dd/MM/yyyy HH:mm")
+                </strong>
+            </div>
+
+            <div>
+                <span>Pagamento</span>
+                <strong>
+                    @(Model.FormaPagamento ?? "Não informado")
+                </strong>
+            </div>
+
+            <div>
+                <span>Status</span>
+                <strong>
+                    @Model.Status
+                </strong>
+            </div>
+
+            <div>
+                <span>Total</span>
+
+                <strong class="admin-detail-total">
+                    @Model.Total.ToString("C")
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

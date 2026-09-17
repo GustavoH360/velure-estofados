@@ -468,7 +468,7 @@ if (themeButton) {
 
         document.addEventListener(
             "click",
-            function (event) {
+          function (event) {
 
                 const button =
                     event.target.closest(
@@ -503,6 +503,10 @@ if (themeButton) {
                     button.dataset.image ||
                     "";
 
+                    const stock =
+    Number(
+        button.dataset.stock
+    );
 
                 if (
                     !Number.isFinite(id) ||
@@ -541,21 +545,52 @@ if (themeButton) {
                     );
 
 
-                if (existingItem) {
+                if (
+    !Number.isFinite(stock) ||
+    stock <= 0
+) {
+    alert(
+        "Este produto está esgotado."
+    );
 
-                    existingItem.quantity++;
+    return;
+}
 
-                } else {
 
-                    cart.push({
-                        id: id,
-                        name: name,
-                        price: price,
-                        image: image,
-                        quantity: 1
-                    });
-                }
+if (existingItem) {
 
+    if (existingItem.quantity >= stock) {
+
+        alert(
+            `Só existem ${stock} unidade(s) disponíveis deste produto.`
+        );
+
+        openCartDrawer();
+
+        return;
+    }
+
+    existingItem.quantity++;
+
+    existingItem.stock = stock;
+
+} else {
+
+    cart.push({
+        id: id,
+        name: name,
+        price: price,
+        image: image,
+        quantity: 1,
+        stock: stock
+    });
+
+}
+
+
+updateCart();
+
+openCartDrawer();
 
                 updateCart();
 
@@ -622,18 +657,29 @@ if (themeButton) {
                     }
 
 
-                    const action =
-                        button.dataset.cartAction;
+if (
+    action ===
+    "increase"
+) {
 
+    const stock =
+        Number(item.stock);
 
-                    if (
-                        action ===
-                        "increase"
-                    ) {
+    if (
+        Number.isFinite(stock) &&
+        stock > 0 &&
+        item.quantity >= stock
+    ) {
 
-                        item.quantity++;
+        alert(
+            `Só existem ${stock} unidade(s) disponíveis deste produto.`
+        );
 
-                    }
+        return;
+    }
+
+    item.quantity++;
+}
 
 
                     if (
@@ -1167,6 +1213,18 @@ if (themeButton) {
                         return;
                     }
 
+                    const emailValido =   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+if (!emailValido) {
+
+    alert(
+        "Digite um endereço de e-mail válido."
+    );
+
+    registerEmail?.focus();
+
+    return;
+}
 
                     if (
                         senha !==
@@ -1627,6 +1685,141 @@ if (themeButton) {
                 // ==========================================
         // CHECKOUT / FINALIZAR PEDIDO
         // ==========================================
+// ==========================================
+// MÁSCARAS DO CHECKOUT
+// ==========================================
+
+const checkoutTelefone =
+    document.getElementById("checkoutTelefone");
+
+const checkoutCpf =
+    document.getElementById("checkoutCpf");
+
+const checkoutCep =
+    document.getElementById("checkoutCep");
+
+const checkoutEstado =
+    document.getElementById("checkoutEstado");
+
+
+// TELEFONE: (11) 99999-9999
+if (checkoutTelefone) {
+
+    checkoutTelefone.addEventListener(
+        "input",
+        function () {
+
+            let valor =
+                this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 11);
+
+            if (valor.length > 10) {
+
+                valor = valor.replace(
+                    /^(\d{2})(\d{5})(\d{0,4})/,
+                    "($1) $2-$3"
+                );
+
+            } else if (valor.length > 6) {
+
+                valor = valor.replace(
+                    /^(\d{2})(\d{4})(\d{0,4})/,
+                    "($1) $2-$3"
+                );
+
+            } else if (valor.length > 2) {
+
+                valor = valor.replace(
+                    /^(\d{2})(\d+)/,
+                    "($1) $2"
+                );
+
+            } else if (valor.length > 0) {
+
+                valor = valor.replace(
+                    /^(\d{0,2})/,
+                    "($1"
+                );
+            }
+
+            this.value = valor;
+        }
+    );
+}
+
+
+// CPF: 000.000.000-00
+if (checkoutCpf) {
+
+    checkoutCpf.addEventListener(
+        "input",
+        function () {
+
+            let valor =
+                this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 11);
+
+            valor = valor.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+            valor = valor.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+            valor = valor.replace(
+                /(\d{3})(\d{1,2})$/,
+                "$1-$2"
+            );
+
+            this.value = valor;
+        }
+    );
+}
+
+
+// CEP: 00000-000
+if (checkoutCep) {
+
+    checkoutCep.addEventListener(
+        "input",
+        function () {
+
+            let valor =
+                this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 8);
+
+            valor = valor.replace(
+                /^(\d{5})(\d)/,
+                "$1-$2"
+            );
+
+            this.value = valor;
+        }
+    );
+}
+
+
+// ESTADO: somente letras e maiúsculo
+if (checkoutEstado) {
+
+    checkoutEstado.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                    .replace(/[^a-zA-Z]/g, "")
+                    .toUpperCase()
+                    .slice(0, 2);
+        }
+    );
+} 
 
         const checkoutButton =
             document.getElementById(
@@ -1742,6 +1935,77 @@ if (themeButton) {
 
                     event.preventDefault();
 
+// ==========================================
+// VALIDAR DADOS DO CHECKOUT
+// ==========================================
+
+const telefoneNumeros =
+    checkoutTelefone?.value.replace(/\D/g, "") || "";
+
+const cpfNumeros =
+    checkoutCpf?.value.replace(/\D/g, "") || "";
+
+const cepNumeros =
+    checkoutCep?.value.replace(/\D/g, "") || "";
+
+const estadoValor =
+    checkoutEstado?.value.trim().toUpperCase() || "";
+
+
+// TELEFONE
+if (
+    telefoneNumeros.length !== 10 &&
+    telefoneNumeros.length !== 11
+) {
+    alert(
+        "Digite um telefone válido com DDD."
+    );
+
+    checkoutTelefone?.focus();
+
+    return;
+}
+
+
+// CPF
+if (
+    cpfNumeros.length > 0 &&
+    cpfNumeros.length !== 11
+) {
+    alert(
+        "Digite um CPF completo."
+    );
+
+    checkoutCpf?.focus();
+
+    return;
+}
+
+
+// CEP
+if (cepNumeros.length !== 8) {
+
+    alert(
+        "Digite um CEP válido com 8 números."
+    );
+
+    checkoutCep?.focus();
+
+    return;
+}
+
+
+// ESTADO
+if (!/^[A-Z]{2}$/.test(estadoValor)) {
+
+    alert(
+        "Digite a sigla do Estado. Exemplo: SP."
+    );
+
+    checkoutEstado?.focus();
+
+    return;
+}
 
                     if (
                         !cart ||
@@ -1994,7 +2258,7 @@ if (themeButton) {
 
         const myOrdersButton =
             document.getElementById(
-                "myOrdersButton"
+                "profileOrdersButton"
             );
 
         const ordersModal =
@@ -2193,62 +2457,160 @@ if (themeButton) {
                                     .join("");
 
 
-                            return `
-                                <div class="order-card">
+                            const statusAtual =
+    pedido.status || "Pendente";
 
-                                    <div class="order-card-header">
+const etapas = [
+    "Pendente",
+    "Em preparação",
+    "Enviado",
+    "Entregue"
+];
 
-                                        <div>
+const indiceAtual =
+    etapas.indexOf(statusAtual);
 
-                                            <div class="order-number">
+const cancelado =
+    statusAtual === "Cancelado";
 
-                                                Pedido #${pedido.id}
+return `
+    <div class="order-card">
 
-                                            </div>
+        <div class="order-card-header">
 
-                                            <span class="order-date">
+            <div>
+                <div class="order-number">
+                    Pedido #${pedido.id}
+                </div>
 
-                                                ${dataFormatada}
+                <span class="order-date">
+                    ${dataFormatada}
+                </span>
+            </div>
 
-                                            </span>
+            <span class="order-status
+                ${cancelado ? "order-status-cancelled" : ""}">
+                ${statusAtual}
+            </span>
 
-                                        </div>
-
-
-                                        <span class="order-status">
-
-                                            ${pedido.status}
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div class="order-items">
-
-                                        ${itensHtml}
-
-                                    </div>
+        </div>
 
 
-                                    <div class="order-total">
+        <div class="order-items">
+            ${itensHtml}
+        </div>
 
-                                        <span>
-                                            Total do pedido
-                                        </span>
 
-                                        <strong>
+        ${
+            cancelado
+            ?
+            `
+                <div class="order-cancelled-box">
 
-                                            ${formatCurrency(
-                                                pedido.total
-                                            )}
+                    <i class="fa-solid fa-circle-xmark"></i>
 
-                                        </strong>
+                    <div>
+                        <strong>Pedido cancelado</strong>
+                        <span>
+                            Este pedido não seguirá para entrega.
+                        </span>
+                    </div>
 
-                                    </div>
+                </div>
+            `
+            :
+            `
+                <div class="order-tracking">
 
-                                </div>
-                            `;
+                    <div class="order-tracking-step
+                        ${indiceAtual >= 0 ? "completed" : ""}">
+
+                        <div class="tracking-icon">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+
+                        <span>
+                            Pedido realizado
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-tracking-line
+                        ${indiceAtual >= 1 ? "completed" : ""}">
+                    </div>
+
+
+                    <div class="order-tracking-step
+                        ${indiceAtual >= 1 ? "completed" : ""}">
+
+                        <div class="tracking-icon">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+
+                        <span>
+                            Em preparação
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-tracking-line
+                        ${indiceAtual >= 2 ? "completed" : ""}">
+                    </div>
+
+
+                    <div class="order-tracking-step
+                        ${indiceAtual >= 2 ? "completed" : ""}">
+
+                        <div class="tracking-icon">
+                            <i class="fa-solid fa-truck"></i>
+                        </div>
+
+                        <span>
+                            Enviado
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-tracking-line
+                        ${indiceAtual >= 3 ? "completed" : ""}">
+                    </div>
+
+
+                    <div class="order-tracking-step
+                        ${indiceAtual >= 3 ? "completed" : ""}">
+
+                        <div class="tracking-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <span>
+                            Entregue
+                        </span>
+
+                    </div>
+
+                </div>
+            `
+        }
+
+
+        <div class="order-total">
+
+            <span>
+                Total do pedido
+            </span>
+
+            <strong>
+                ${formatCurrency(pedido.total)}
+            </strong>
+
+        </div>
+
+    </div>
+`;
                         }
                     )
                     .join("");
@@ -2270,22 +2632,20 @@ if (themeButton) {
         }
 
 
+if (profileOrdersButton) {
 
-        if (myOrdersButton) {
+    profileOrdersButton.addEventListener(
+        "click",
+        async function () {
 
-            myOrdersButton.addEventListener(
-                "click",
-                async function () {
+            closeProfileModal();
 
-                    closeAccountDropdown();
+            openOrdersModal();
 
-                    openOrdersModal();
-
-                    await loadOrders();
-                }
-            );
+            await loadOrders();
         }
-
+    );
+}
 
         if (closeOrders) {
 
@@ -2623,68 +2983,66 @@ if (themeButton) {
         }
 
 
-        function categoryMatches(
-            selectedCategory,
-            productCategory
-        ) {
+function categoryMatches(
+    selectedCategory,
+    productCategory,
+    isPremium
+) {
 
-            if (selectedCategory === "todos") {
-                return true;
-            }
+    if (selectedCategory === "todos") {
+        return true;
+    }
 
-            if (
-                selectedCategory === "sofas" &&
-                productCategory.includes("sofa")
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "sofas" &&
+        productCategory.includes("sofa")
+    ) {
+        return true;
+    }
 
-            if (
-                selectedCategory === "colchoes" &&
-                productCategory.includes("colch")
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "colchoes" &&
+        productCategory.includes("colch")
+    ) {
+        return true;
+    }
 
-            if (
-                selectedCategory === "armarios" &&
-                (
-                    productCategory.includes("armario") ||
-                    productCategory.includes("escrivaninha")
-                )
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "armarios" &&
+        (
+            productCategory.includes("armario") ||
+            productCategory.includes("escrivaninha")
+        )
+    ) {
+        return true;
+    }
 
-            if (
-                selectedCategory === "mesa" &&
-                (
-                    productCategory.includes("mesa") ||
-                    productCategory.includes("cadeira")
-                )
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "mesa" &&
+        (
+            productCategory.includes("mesa") ||
+            productCategory.includes("cadeira")
+        )
+    ) {
+        return true;
+    }
 
-            if (
-                selectedCategory === "multiuso" &&
-                productCategory.includes("multiuso")
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "multiuso" &&
+        productCategory.includes("multiuso")
+    ) {
+        return true;
+    }
 
-            if (
-                selectedCategory === "premium" &&
-                (
-                    productCategory.includes("premium") ||
-                    productCategory.includes("lancamento")
-                )
-            ) {
-                return true;
-            }
+    if (
+        selectedCategory === "premium" &&
+        isPremium
+    ) {
+        return true;
+    }
 
-            return false;
-        }
+    return false;
+}
 
 
         function applyProductFilters() {
@@ -2722,11 +3080,15 @@ if (themeButton) {
                             searchTerm
                         );
 
-                    const matchesCategory =
-                        categoryMatches(
-                            activeCategory,
-                            productCategory
-                        );
+const isPremium =
+    card.dataset.premium === "true";
+
+const matchesCategory =
+    categoryMatches(
+        activeCategory,
+        productCategory,
+        isPremium
+    );
 
                     const showProduct =
                         matchesSearch &&

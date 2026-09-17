@@ -109,11 +109,20 @@
 
             @foreach (var produto in Model)
             {
-                <article class="product-card"
+<article class="product-card"
          data-product-card
          data-name="@produto.Nome"
          data-category="@produto.Categoria"
-         data-color="@produto.Cor">
+         data-color="@produto.Cor"
+         data-premium="@produto.Destaque.ToString().ToLower()">
+
+@if (produto.Destaque)
+{
+    <span class="premium-badge">
+        <i class="fa-solid fa-crown"></i>
+        PREMIUM
+    </span>
+}
 
                     <div class="product-image">
 
@@ -185,22 +194,51 @@
                             </p>
                         }
 
-                        <button class="add-cart-button"
-                         type="button"
-                         data-id="@produto.Id"
-                         data-name="@produto.Nome"
-                         data-price="@produto.Preco.ToString(System.Globalization.CultureInfo.InvariantCulture)"
-                          data-image="@produto.ImagemUrl">
+    @if (produto.Estoque <= 0)
+{
+    <div class="product-stock product-stock-empty">
+        <i class="fa-solid fa-circle-xmark"></i>
+        Produto esgotado
+    </div>
 
-                          <i class="fa-solid fa-cart-shopping"></i>
+    <button class="add-cart-button add-cart-disabled"
+            type="button"
+            disabled>
 
-                            Adicionar
+        <i class="fa-solid fa-ban"></i>
+        Esgotado
 
-                        </button>
+    </button>
+}
+else
+{
+    @if (produto.Estoque <= 5)
+    {
+        <div class="product-stock product-stock-low">
+            <i class="fa-solid fa-fire"></i>
+
+            Últimas @produto.Estoque unidade(s)
+        </div>
+    }
+
+    <button class="add-cart-button"
+            type="button"
+            data-id="@produto.Id"
+            data-name="@produto.Nome"
+            data-price="@produto.Preco.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+            data-image="@produto.ImagemUrl"
+            data-stock="@produto.Estoque">
+
+        <i class="fa-solid fa-cart-shopping"></i>
+        Adicionar
+
+    </button>
+}
+
+
+
 
                     </div>
-
-
 
 
 

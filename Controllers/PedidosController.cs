@@ -62,6 +62,80 @@ public class PedidosController : ControllerBase
             });
         }
 
+
+// =========================================================
+// VALIDAÇÃO DOS DADOS DO CHECKOUT
+// =========================================================
+
+// TELEFONE
+var telefoneNumeros =
+    new string(
+        (request.Telefone ?? "")
+        .Where(char.IsDigit)
+        .ToArray()
+    );
+
+if (telefoneNumeros.Length != 10 &&
+    telefoneNumeros.Length != 11)
+{
+    return BadRequest(new
+    {
+        mensagem = "Informe um telefone válido com DDD."
+    });
+}
+
+
+// CPF - continua opcional
+var cpfNumeros =
+    new string(
+        (request.Cpf ?? "")
+        .Where(char.IsDigit)
+        .ToArray()
+    );
+
+if (!string.IsNullOrWhiteSpace(request.Cpf) &&
+    cpfNumeros.Length != 11)
+{
+    return BadRequest(new
+    {
+        mensagem = "Informe um CPF completo."
+    });
+}
+
+
+// CEP
+var cepNumeros =
+    new string(
+        (request.Cep ?? "")
+        .Where(char.IsDigit)
+        .ToArray()
+    );
+
+if (cepNumeros.Length != 8)
+{
+    return BadRequest(new
+    {
+        mensagem = "Informe um CEP válido com 8 números."
+    });
+}
+
+
+// ESTADO
+var estado =
+    (request.Estado ?? "")
+    .Trim()
+    .ToUpperInvariant();
+
+if (estado.Length != 2 ||
+    !estado.All(char.IsLetter))
+{
+    return BadRequest(new
+    {
+        mensagem =
+            "Informe a sigla do estado com 2 letras. Exemplo: SP."
+    });
+}
+
         var idsProdutos =
             request.Itens
                 .Select(i => i.ProdutoId)

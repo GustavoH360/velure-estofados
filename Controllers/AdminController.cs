@@ -134,6 +134,43 @@ ViewBag.LabelsGrafico =
 ViewBag.ValoresGrafico =
     valoresGrafico;
 
+    // =========================================
+// STATUS DOS PEDIDOS
+// =========================================
+
+ViewBag.PedidosPendentes =
+    await _context.Pedidos
+        .CountAsync(p => p.Status == "Pendente");
+
+ViewBag.PedidosPreparacao =
+    await _context.Pedidos
+        .CountAsync(p => p.Status == "Em preparação");
+
+ViewBag.PedidosEnviados =
+    await _context.Pedidos
+        .CountAsync(p => p.Status == "Enviado");
+
+ViewBag.PedidosEntregues =
+    await _context.Pedidos
+        .CountAsync(p => p.Status == "Entregue");
+
+// =========================================
+// PRODUTOS COM ESTOQUE BAIXO
+// =========================================
+
+var produtosEstoqueBaixo =
+    await _context.Produtos
+        .Where(p =>
+            p.Ativo &&
+            p.Estoque <= 5)
+        .OrderBy(p => p.Estoque)
+        .ThenBy(p => p.Nome)
+        .Take(5)
+        .ToListAsync();
+
+ViewBag.ProdutosEstoqueBaixo =
+    produtosEstoqueBaixo;
+
     return View(pedidosRecentes);
 }
 
@@ -342,47 +379,174 @@ ViewBag.ValoresGrafico =
         return View(pedidos);
     }
 
-    // ==========================================
-    // ALTERAR STATUS DO PEDIDO
-    // ==========================================
+    // =========================================
+// DETALHES DO PEDIDO
+// =========================================
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AlterarStatusPedido(
-        int id,
-        string status)
+[HttpGet]
+public async Task<IActionResult> DetalhesPedido(int id)
+{
+    var pedido =
+        await _context.Pedidos
+            .Include(p => p.Cliente)
+            .Include(p => p.Itens)
+            .FirstOrDefaultAsync(
+                p => p.Id == id
+            );
+
+    if (pedido == null)
     {
-        var statusPermitidos = new[]
-        {
-            "Pendente",
-            "Em preparação",
-            "Enviado",
-            "Entregue",
-            "Cancelado"
-        };
-
-        if (!statusPermitidos.Contains(status))
-        {
-            TempData["Erro"] = "Status inválido.";
-            return RedirectToAction(nameof(Pedidos));
-        }
-
-        var pedido = await _context.Pedidos.FindAsync(id);
-
-        if (pedido == null)
-        {
-            return NotFound();
-        }
-
-        pedido.Status = status;
-
-        await _context.SaveChangesAsync();
-
-        TempData["Sucesso"] =
-            $"Pedido #{pedido.Id} atualizado para {status}.";
-
-        return RedirectToAction(nameof(Pedidos));
+        return NotFound();
     }
+
+    return View(pedido);
+}
+
+ // =========================================
+// ALTERAR STATUS DO PEDIDO
+// =========================================
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> AlterarStatusPedido(
+    int id,
+    string status)
+{
+    var statusPermitidos = new[]
+    {
+        "Pendente",
+        "Em preparação",
+        "Enviado",
+        "Entregue",
+        "Cancelado"
+    };
+
+    if (!statusPermitidos.Contains(status))
+    {
+        TempData["Erro"] = "Status inválido.";
+
+        return RedirectToAction(
+            nameof(Pedidos)
+        );
+    }
+
+
+    var pedido =
+        await _context.Pedidos
+            .Include(p => p.Itens)
+            .FirstOrDefaultAsync(
+                p => p.Id == id
+            );
+
+    if (pedido == null)
+    {
+        return NotFound();
+    }
+
+
+    var statusAnterior =
+        pedido.Status;
+
+
+    // =====================================
+    // PEDIDO NORMAL -> CANCELADO
+    // DEVOLVE OS PRODUTOS AO ESTOQUE
+    // =====================================
+
+    if (
+        statusAnterior != "Cancelado" &&
+        status == "Cancelado"
+    )
+    {
+        foreach (var item in pedido.Itens)
+        {
+            var produto =
+                await _context.Produtos
+                    .FindAsync(item.ProdutoId);
+
+            if (produto != null)
+            {
+                produto.Estoque +=
+                    item.Quantidade;
+            }
+        }
+    }
+
+
+    // =====================================
+    // CANCELADO -> PEDIDO ATIVO
+    // RETIRA NOVAMENTE DO ESTOQUE
+    // =====================================
+
+    if (
+        statusAnterior == "Cancelado" &&
+        status != "Cancelado"
+    )
+    {
+        foreach (var item in pedido.Itens)
+        {
+            var produto =
+                await _context.Produtos
+                    .FindAsync(item.ProdutoId);
+
+            if (produto == null)
+            {
+                TempData["Erro"] =
+                    $"O produto \"{item.NomeProduto}\" não foi encontrado.";
+
+                return RedirectToAction(
+                    nameof(Pedidos)
+                );
+            }
+
+            if (
+                produto.Estoque <
+                item.Quantidade
+            )
+            {
+                TempData["Erro"] =
+                    $"Estoque insuficiente para reativar o pedido. " +
+                    $"Produto: {item.NomeProduto}. " +
+                    $"Disponível: {produto.Estoque}.";
+
+                return RedirectToAction(
+                    nameof(Pedidos)
+                );
+            }
+        }
+
+
+        // Todos possuem estoque.
+        // Agora podemos retirar.
+
+        foreach (var item in pedido.Itens)
+        {
+            var produto =
+                await _context.Produtos
+                    .FindAsync(item.ProdutoId);
+
+            if (produto != null)
+            {
+                produto.Estoque -=
+                    item.Quantidade;
+            }
+        }
+    }
+
+
+    pedido.Status = status;
+
+    await _context.SaveChangesAsync();
+
+
+    TempData["Sucesso"] =
+        $"Pedido #{pedido.Id} atualizado para {status}.";
+
+
+    return RedirectToAction(
+        nameof(Pedidos)
+    );
+}
 
     // ==========================================
     // CLIENTES

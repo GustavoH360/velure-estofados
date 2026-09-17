@@ -156,6 +156,19 @@
 
                     </div>
 
+<div class="admin-order-actions">
+
+    <a asp-controller="Admin"
+       asp-action="DetalhesPedido"
+       asp-route-id="@pedido.Id"
+       class="admin-details-button">
+
+        <i class="fa-solid fa-eye"></i>
+        Ver detalhes
+
+    </a>
+
+</div>
 
                     <div class="admin-order-footer">
 
@@ -231,6 +244,7 @@
 
         </div>
     }
+
 
 <a asp-controller="Admin"
    asp-action="Clientes"
