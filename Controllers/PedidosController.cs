@@ -12,12 +12,16 @@ namespace Velure.Controllers;
 [Authorize]
 public class PedidosController : ControllerBase
 {
-    private readonly AppDbContext _context;
+private readonly AppDbContext _context;
+private readonly ILogger<PedidosController> _logger;
 
-    public PedidosController(AppDbContext context)
-    {
-        _context = context;
-    }
+public PedidosController(
+    AppDbContext context,
+    ILogger<PedidosController> logger)
+{
+    _context = context;
+    _logger = logger;
+}
 
     // =========================================================
     // FINALIZAR PEDIDO
@@ -136,11 +140,21 @@ if (estado.Length != 2 ||
     });
 }
 
-        var idsProdutos =
-            request.Itens
-                .Select(i => i.ProdutoId)
-                .Distinct()
-                .ToList();
+        // Agrupa produtos repetidos antes de validar o estoque
+var itensAgrupados =
+    request.Itens
+        .GroupBy(i => i.ProdutoId)
+        .Select(g => new
+        {
+            ProdutoId = g.Key,
+            Quantidade = g.Sum(i => i.Quantidade)
+        })
+        .ToList();
+
+var idsProdutos =
+    itensAgrupados
+        .Select(i => i.ProdutoId)
+        .ToList();
 
         var produtos =
             await _context.Produtos
@@ -162,7 +176,7 @@ if (estado.Length != 2 ||
 
         var itensPedido = new List<ItemPedido>();
 
-        foreach (var itemCarrinho in request.Itens)
+        foreach (var itemCarrinho in itensAgrupados)
         {
             if (itemCarrinho.Quantidade <= 0)
             {
@@ -254,7 +268,7 @@ if (estado.Length != 2 ||
                 Itens = itensPedido
             };
 
-            foreach (var itemCarrinho in request.Itens)
+            foreach (var itemCarrinho in itensAgrupados)
             {
                 var produto =
                     produtos.First(
@@ -285,19 +299,25 @@ if (estado.Length != 2 ||
                 }
             });
         }
-        catch
-        {
-            await transaction.RollbackAsync();
+     catch (Exception ex)
+{
+    await transaction.RollbackAsync();
 
-            return StatusCode(
-                500,
-                new
-                {
-                    mensagem =
-                        "Não foi possível finalizar o pedido."
-                }
-            );
+    _logger.LogError(
+        ex,
+        "Erro ao finalizar pedido do cliente {ClienteId}.",
+        clienteId
+    );
+
+    return StatusCode(
+        500,
+        new
+        {
+            mensagem =
+                "Não foi possível finalizar o pedido."
         }
+    );
+}
     }
 
     // =========================================================

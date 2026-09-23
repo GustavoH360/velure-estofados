@@ -1,16 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Velure.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var culturaBrasileira = new CultureInfo("pt-BR");
+CultureInfo.DefaultThreadCurrentCulture = culturaBrasileira;
+CultureInfo.DefaultThreadCurrentUICulture = culturaBrasileira;
 
 builder.Services.AddControllersWithViews();
 builder.Services
     .AddAuthentication(
         CookieAuthenticationDefaults.AuthenticationScheme
     )
-    .AddCookie(options =>
+ 
+   .AddCookie(options =>
     {
         options.Cookie.Name = "Velure.Auth";
         options.LoginPath = "/";
@@ -28,6 +33,8 @@ var connectionString =
         "A ConnectionString 'DefaultConnection' não foi encontrada."
     );
 
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(connectionString)
 );
@@ -39,6 +46,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+
+
 
 if (!app.Environment.IsDevelopment())
 {

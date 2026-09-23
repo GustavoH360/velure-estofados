@@ -591,10 +591,6 @@ if (existingItem) {
 updateCart();
 
 openCartDrawer();
-
-                updateCart();
-
-                openCartDrawer();
             }
         );
 
@@ -639,6 +635,8 @@ openCartDrawer();
                             cartItem.dataset.cartId
                         );
 
+const action =
+    button.dataset.cartAction;
 
                     const item =
                         cart.find(
@@ -2256,10 +2254,11 @@ if (!/^[A-Z]{2}$/.test(estadoValor)) {
         // MEUS PEDIDOS
         // ==========================================
 
-        const myOrdersButton =
-            document.getElementById(
-                "profileOrdersButton"
-            );
+const myOrdersButton =
+    document.getElementById("myOrdersButton");
+
+const profileOrdersButton =
+    document.getElementById("profileOrdersButton");
 
         const ordersModal =
             document.getElementById(

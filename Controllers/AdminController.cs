@@ -39,11 +39,19 @@ public async Task<IActionResult> Index()
     var totalPedidos =
         await pedidosValidos.CountAsync();
 
-    var estoqueBaixo =
-        await _context.Produtos
-            .CountAsync(p =>
-                p.Ativo &&
-                p.Estoque <= 5);
+        var estoqueBaixo =
+    await _context.Produtos
+        .CountAsync(p =>
+            p.Ativo &&
+            p.Estoque > 0 &&
+            p.Estoque <= 5);
+        
+var produtosEsgotados =
+    await _context.Produtos
+        .CountAsync(p =>
+            p.Ativo &&
+            p.Estoque == 0);
+
 
     var faturamento =
         await pedidosValidos
@@ -79,6 +87,7 @@ public async Task<IActionResult> Index()
     ViewBag.TotalClientes = totalClientes;
     ViewBag.TotalPedidos = totalPedidos;
     ViewBag.EstoqueBaixo = estoqueBaixo;
+    ViewBag.ProdutosEsgotados = produtosEsgotados;
     ViewBag.Faturamento = faturamento;
     ViewBag.TicketMedio = ticketMedio;
 
@@ -162,6 +171,7 @@ var produtosEstoqueBaixo =
     await _context.Produtos
         .Where(p =>
             p.Ativo &&
+            p.Estoque > 0 &&
             p.Estoque <= 5)
         .OrderBy(p => p.Estoque)
         .ThenBy(p => p.Nome)
