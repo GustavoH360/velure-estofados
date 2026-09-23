@@ -2630,7 +2630,15 @@ return `
             }
         }
 
-
+if (myOrdersButton) {
+    myOrdersButton.addEventListener(
+        "click",
+        async function () {
+            openOrdersModal();
+            await loadOrders();
+        }
+    );
+}
 if (profileOrdersButton) {
 
     profileOrdersButton.addEventListener(
